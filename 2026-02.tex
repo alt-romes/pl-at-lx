@@ -1,5 +1,3 @@
-
-
 %
 % 1. Motivation / Goal
 %   Why do you care about a debugger?
@@ -324,6 +322,13 @@ nextInst:
 \end{tikzpicture}
 \end{frame}
 
+\begin{frame}{hie-bios / flag discovery}
+    \begin{itemize}
+        \item Delegate figuring out the flags to compile project to hie-bios
+        \item Same tool used by HLS to configure project
+    \end{itemize}
+\end{frame}
+
 \begin{frame}{Relating source code and bytecode}
 \begin{itemize}
     \item Don't reverse engineer source from compiled code
@@ -359,11 +364,17 @@ nextInst:
 \end{itemize}
 \end{frame}
 
-\begin{frame}{hie-bios / flag discovery}
-    \begin{itemize}
-        \item Delegate figuring out the flags to compile project to hie-bios
-        \item Same tool used by HLS to configure project
-    \end{itemize}
+\begin{frame}{Inspecting variables and DebugView}
+\begin{itemize}
+    \item Decode any heap value as structured \texttt{Term}
+    \item Find \texttt{DebugView} instances at runtime
+    \item All custom built-in visualisations implemented with \texttt{DebugView}
+        \begin{itemize}
+            \item \texttt{"hello"} rather than \texttt{(:) 'h' (...)}
+            \item \texttt{key => value} for Maps
+        \end{itemize}
+    \item \texttt{DebugView} instances can be provided by user
+\end{itemize}
 \end{frame}
 
 \begin{frame}{Stack traces}
@@ -381,28 +392,58 @@ nextInst:
 
 \begin{frame}{Exceptions}
     \begin{itemize}
-        \item raise#
+        \item raise# primop yields
+        \item Inspect exception backtrace \texttt{ExceptionContext}
+            \begin{itemize}
+                \item Exception type
+                \item Raise src location
+                \item Backtraces
+            \end{itemize}
     \end{itemize}
 \end{frame}
 
-\section{Future}
+\begin{frame}{Multi-threaded debugging (WIP)}
+\begin{itemize}
+    \item Display debuggee threads
+    \item But not debugger threads!
+    \item A stack per thread
+    \item Pausing per thread
+\end{itemize}
+\end{frame}
+
+\begin{frame}{External interpreter}
+Same motivation as for GHC, even better for Debugger
+\begin{itemize}
+    \item Decouples the compiler from the interpreted code
+        \begin{itemize}
+            \item Debuggee can be profiled, while debugger not
+        \end{itemize}
+    \item Run debuggee in isolated process
+        \begin{itemize}
+            \item Threads no longer mixed
+            \item Stdin/Stdout no longer mixed
+        \end{itemize}
+    \item Enables remote debugging
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Abstractions with external interpreter}
+\begin{itemize}
+    \item \texttt{ForeignRef} (typed ref that cannot be dereferenced locally)
+    \item \texttt{TermParser} (parser combinator with \texttt{Term} rather than \texttt{String})
+    \item \texttt{RemoteExpr} (eDSL for remote evaluation with batching and caching)
+    \item \texttt{Program} (for querying the debugger from \texttt{DebugView})
+\end{itemize}
+\end{frame}
 
 \begin{frame}{Roadmap}
     \begin{itemize}
-        \item Bug fixing (need reports!)
         \item Persistent Bytecode Artifacts
             \begin{itemize}
-                \item Reduced startup time
                 \item Step into library functions
                 \item Better step-out
             \end{itemize}
-        \item Backtraces (using existing mechanisms like IPE)
-        \item Better exceptions support
-        \item Better variables (more than just free vars in expr)
-        \item Conditional breakpoints
-        \item Disassemble requests
         \item Hot code reloading
-        \item Multi-threaded debugging
         \item Compiled code debugging
         \item Time travelling debugging
     \end{itemize}
