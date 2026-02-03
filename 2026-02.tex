@@ -359,7 +359,7 @@ nextInst:
         \begin{itemize}
             \item Walk stack to enable the breakpoint at the start of the continuation
             \item Ensure all continuations do have a breakpoint
-            \item Challenge: compiled code vs. interpreted code
+            \item Challenge: compiled code interleaved w/ interpreted code
         \end{itemize}
 \end{itemize}
 \end{frame}
@@ -387,6 +387,7 @@ nextInst:
             \end{itemize}
         \item What about tail calls?
         \item Binding stack frame variables
+        \item Custom stack annotations
     \end{itemize}
 \end{frame}
 
@@ -395,7 +396,7 @@ nextInst:
         \item \texttt{raise\#} primop yields
         \item Inspect exception backtrace \texttt{ExceptionContext}
             \begin{itemize}
-                \item Exception type
+                \item Exception type and data
                 \item Raise src location
                 \item Backtraces
             \end{itemize}
